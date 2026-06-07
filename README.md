@@ -170,7 +170,7 @@ SELECT
 FROM Flat_User_Data;
 ```
 
-## 📊 Key Performance Indicators (KPIs) ![Customer-Funnel-Analysis Tableau Dashboard](https://public.tableau.com/app/profile/charles3440/viz/CustomerFunnelPerformance/WPCustomerFunnel)
+## 📊 Key Performance Indicators (KPIs)
 
 
 | Metric | Measured Value | Business Formulation |
@@ -185,7 +185,7 @@ FROM Flat_User_Data;
 
 ## 📈 Dashboard Design & Live Metrics
 
-The final dataset was mapped into an interactive executive dashboard layout:
+The final dataset was mapped into an interactive executive dashboard layout. Check out the [Tableau Dashboard]([https://google.com](https://public.tableau.com/app/profile/charles3440/viz/CustomerFunnelPerformance/WPCustomerFunnel)):
 
 ![Customer Funnel Performance Dashboard](https://github.com/CharlesProjectSolutions/Customer-Funnel-Analysis/blob/d92e73c6085680e6e2cca5eabf79c16e0845c2dc/Customer%20Funnel%20Dashboard.png)
 
