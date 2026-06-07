@@ -49,7 +49,7 @@ Warby Parker's customer acquisition model depends on successfully guiding users 
 
 ### Quiz Funnel
 - At which question(s) do the most users abandon the quiz?
-- Is there evidence of **quiz fatigue** — and if so, at what point?
+- Is there evidence of **quiz fatigue**, and if so, at what point?
 - Which quiz questions are most and least effective at retaining users?
 
 ### Home Try-On Funnel
@@ -170,7 +170,7 @@ SELECT
 FROM Flat_User_Data;
 ```
 
-## 📊 Key Performance Indicators (KPIs)
+## 📊 Key Performance Indicators (KPIs) ![Customer-Funnel-Analysis Tableau Dashboard](https://public.tableau.com/app/profile/charles3440/viz/CustomerFunnelPerformance/WPCustomerFunnel)
 
 
 | Metric | Measured Value | Business Formulation |
