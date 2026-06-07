@@ -186,7 +186,7 @@ FROM Flat_User_Data;
 
 The final dataset was mapped into an interactive executive dashboard layout:
 
-![Customer Funnel Performance Dashboard](<Customer Funnel Dashboard.png />)
+![Customer Funnel Performance Dashboard](https://github.com/CharlesProjectSolutions/Customer-Funnel-Analysis/blob/d92e73c6085680e6e2cca5eabf79c16e0845c2dc/Customer%20Funnel%20Dashboard.png)
 
 ---
 
