@@ -304,3 +304,124 @@ Dataset inspired by a collaboration with Warby Parker's Data Science team.
 ---
 
 *Built by Charles · Business Intelligence & Data Analytics Portfolio*
+
+
+
+
+
+# E-Commerce Marketing Funnel Analysis & A/B Test Engineering Pipeline
+
+## 📌 Project Overview
+This repository contains an end-to-end analytics engineering pipeline designed to ingest, sanitize, model, and visualize multi-stage marketing funnel data. 
+
+### The Business Challenge
+The primary stakeholder goal was to evaluate user drop-off across a multi-stage acquisition journey (Quiz → Survey → Home Try-On → Purchase) and isolate the financial ROI of an active product experiment: **offering a 3-pair vs. 5-pair home try-on kit**. Data was historically siloed across raw, unformatted user activity logs, lacking a single source of truth.
+
+### The Solution
+Engineered a robust, high-performance **Load-Then-Link data pipeline** in MS SQL Server using T-SQL. By pre-calculating complex window analytics in the database layer and denormalizing the final data schema, heavy computing costs were shifted away from the visualization layer—resulting in a sub-second rendering, drag-and-drop optimized Tableau Dashboard.
+
+---
+
+## 🚀 Key Achievements & Business Impact
+* **A/B Test Validation:** Proved that expanding the home trial sampler size from 3 to 5 pairs generated a **13.1% conversion lift** in final purchases, justifying a full-scale corporate rollout.
+* **Funnel Visibility:** Identified an overall **54.0% funnel conversion rate** from initial quiz touchpoint to checkout, highlighting exact question-level friction points for marketing optimization.
+* **Architectural Performance:** Eliminated live dashboard calculation lag by processing aggregations, deltas, and multi-table lag structures upstream within optimized database views.
+
+---
+
+## 🛠️ Tech Stack & Architecture
+* **Database Engine:** Microsoft SQL Server (T-SQL)
+* **Data Engineering Strategies:** Staging Layer Design, Type-Casting Sanitation, Common Table Expressions (CTEs), Window Functions, Denormalization for BI.
+* **Business Intelligence:** Tableau Desktop (Level of Detail (LOD) Expressions, Advanced Funnel Formatting).
+
+---
+
+## 📂 Repository Structure & SQL Source Code
+
+### 1. High-Availability Ingestion Layer (Staging)
+Raw marketing logs are notoriously volatile, frequently passing text-based booleans (`"TRUE"/"FALSE"`) and blank inputs that trigger strict database schema crashes. To isolate ingestion availability from data formatting errors, raw data is safely loaded into text-safe staging tables before type-conversion scripts are executed.
+
+```sql
+-- Text-safe temporary staging structures
+CREATE TABLE #Purchase_Staging (
+    UserId VARCHAR(100), ProductId VARCHAR(50), Style VARCHAR(100), 
+    ModelName VARCHAR(100), Color VARCHAR(100), Price VARCHAR(50)
+);
+
+-- Ingesting raw server logs
+BULK INSERT #Purchase_Staging
+FROM 'C:\YourDataPath\purchase.csv'
+WITH (FORMAT = 'CSV', FIRSTROW = 2, FIELDTERMINATOR = ',', ROWTERMINATOR = '\n');
+
+-- Explicit type casting and safety sanitization
+INSERT INTO Purchase (UserId, ProductId, Style, ModelName, Color, Price)
+SELECT 
+    TRY_CAST(UserId AS UNIQUEIDENTIFIER), 
+    TRY_CAST(ProductId AS INT), 
+    Style, 
+    ModelName, 
+    Color, 
+    TRY_CAST(Price AS DECIMAL(10,2))
+FROM #Purchase_Staging;
+
+DROP TABLE #Purchase_Staging;
+```
+
+### 2. Analytical Data Modeling & Denormalization
+Because MS SQL Server does not natively support `COUNT(DISTINCT)` within window clauses (`OVER`), funnel stages and chronological step-by-step completion percentages are calculated inside a specialized summary layer, then joined back to raw rows to build a wide table optimized for BI tools.
+
+```sql
+WITH Quiz_Counts AS (
+    SELECT 
+        Question, 
+        CAST(COUNT(DISTINCT UserId) AS DECIMAL(10,2)) AS Current_Question_Users
+    FROM Survey
+    GROUP BY Question
+),
+Funnel_Lag AS (
+    SELECT 
+        Question, Current_Question_Users,
+        LAG(Current_Question_Users) OVER (ORDER BY Question) AS Previous_Question_Users
+    FROM Quiz_Counts
+),
+Funnel_Percentages AS (
+    SELECT 
+        Question,
+        CAST(Current_Question_Users AS INT) AS Total_Funnel_Users,
+        CAST(COALESCE((Current_Question_Users / Previous_Question_Users) * 100.0, 100.0) AS DECIMAL(10,2)) AS Percent_Q_Completion
+    FROM Funnel_Lag
+),
+Full_Metrics_Summary AS (
+    SELECT 
+        Question, Current_Question_Users, Previous_Question_Users, Percent_Q_Completion,
+        CAST(COALESCE(Percent_Q_Completion - LAG(Percent_Q_Completion) OVER (ORDER BY Question), 0.00) AS DECIMAL(10,2)) AS Percentage_Point_Delta
+    FROM Funnel_Percentages
+)
+-- Denormalizing metrics onto flat, uncollapsed rows for drag-and-drop BI efficiency
+SELECT 
+    raw.UserId, raw.Question, raw.Response,
+    f.Current_Question_Users, f.Previous_Question_Users, f.Percent_Q_Completion, f.Percentage_Point_Delta
+FROM Survey raw
+LEFT JOIN Full_Metrics_Summary f ON raw.Question = f.Question;
+```
+
+---
+
+## 📊 Business Intelligence Dashboard Deployment
+To preserve the data engineering work, the Tableau workbook utilizes specific structural configurations:
+1. **Aggregations:** Denormalized percentage metrics (`Percent_Q_Completion`, `Percentage_Point_Delta`) are aggregated via **`MAX`** or **`MIN`** instead of `SUM` to match the flat row layout.
+2. **Dynamic Conversion Metrics:** Overall funnel performance utilizes robust Level of Detail (LOD) calculations to guarantee dynamic recalculations whenever user demographic filters are toggled:
+
+```tableau
+{ FIXED : MIN(IF [Question] = '5. When was your last eye exam?' THEN [Current_Question_Users] END) }
+/
+{ FIXED : MIN(IF [Question] = '1. What are you looking for?' THEN [Current_Question_Users] END) }
+```
+
+---
+
+## 📈 Strategic Insights & Recommendations
+* **Scale the Winner:** The 5-pair home try-on kit completely out-performed the 3-pair baseline, delivering a significant data-backed justification to retire smaller kit sizes immediately.
+* **Streamline the Onboarding:** High drop-off metrics isolated within specific middle segments of the user quiz pinpoint an urgent opportunity for UX simplification.
+* **Personalized Remarketing:** Granular, uncollapsed row correlations revealed that specific early style selections strongly predict final customer lifetime value, providing the marketing team with clear behavioral triggers for retargeting campaigns.
+
