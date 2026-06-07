@@ -105,12 +105,11 @@ DROP TABLE #Purchase_Staging;
 
 ## 🔀 Funnel Logic
 
-The customer journey is modeled as a **linear conversion funnel** across four stages:
+The customer journey is modeled as a **linear conversion funnel** across three stages:
 
 ```
-[Style Quiz Response] → [Quiz Completion] → [Home Try-On] → [Purchase]
+[Quiz Completion] → [Home Try-On] → [Purchase]
 ```
----
 
 ## 🛠️ Pivoted Analytical SQL Modeling
 Because live relational database connections (MS SQL Server) restrict Tableau's native user-interface pivot capabilities, the data layer was reshaped at the database tier using a **vertical `UNION ALL` stacking framework**. This structures wide columns into a uniform text dimension (`Funnel_Stage`) and a single numeric measure (`Stage_Users`), preventing heavy calculations inside the BI engine.
@@ -170,8 +169,6 @@ SELECT
 FROM Flat_User_Data;
 ```
 
----
-
 ## 📊 Key Performance Indicators (KPIs)
 
 
@@ -187,17 +184,9 @@ FROM Flat_User_Data;
 
 ## 📈 Dashboard Design & Live Metrics
 
-The final dataset was mapped into an interactive executive dashboard layout. By deploying Level of Detail (LOD) expressions, overall funnel conversion remains dynamic and reactive to categorical side-filters:
+The final dataset was mapped into an interactive executive dashboard layout:
 
-```tableau
-{ FIXED : MIN(IF [Question] = '3 - Purchased' THEN [Stage_Users] END) }
-/
-{ FIXED : MIN(IF [Question] = '1 - Quiz Started' THEN [Stage_Users] END) }
-```
-
-### Executive Performance View
-<!-- Replace the line below with your actual image path or GitHub URL asset once uploaded -->
-![Customer Funnel Performance Dashboard](https://githubusercontent.com)
+![Customer Funnel Performance Dashboard](<img width="971" height="888" alt="Customer Funnel Dashboard" src="https://github.com/user-attachments/assets/bd011f95-03a2-4a35-b2b1-b820df60b9ea" />)
 
 ---
 
