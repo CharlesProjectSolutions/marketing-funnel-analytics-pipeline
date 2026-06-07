@@ -4,52 +4,48 @@
 ![BI](https://img.shields.io/badge/Domain-Business%20Intelligence-orange?style=flat-square)
 ![Status](https://img.shields.io/badge/Status-Complete-brightgreen?style=flat-square)
 
-> **A full-funnel SQL analysis of Warby Parker's style quiz and home try-on customer journey; measuring conversion rates, diagnosing drop-off points, and evaluating an A/B test on try-on pair volume.**
-
-![SQL Engine](https://shields.io)
-![BI Platform](https://shields.io)
-![Status](https://shields.io)
-
-> **An end-to-end analytics engineering pipeline utilizing a Load-Then-Link staging design to ingest volatile web logs, compute advanced window metrics, and serve a denormalized, vertically pivoted data layer optimized for dashboard development**
+> **An end-to-end full-funnel analysis of Warby Parker's style quiz and home try-on customer journey; measuring conversion rates, diagnosing drop-off points, and evaluating an A/B test on try-on pair volume.**
+> **Utilizing a Load-Then-Link staging design to ingest volatile web logs, compute window metrics, and serve a denormalized, vertically pivoted data layer optimized for dashboard development**
 
 
 ---
 
 ## 📋 Table of Contents
 
-- [Project Overview](#project-overview)
-- [Business Problem](#business-problem)
+- [Project Overview](#-project-overview)
+- [Business Problem](#-business-problem)
 - [Dataset Description](#dataset-description)
-- [Funnel Logic](#funnel-logic)
-- [SQL Methodology](#sql-methodology)
-- [Key Performance Indicators (KPIs)](#key-performance-indicators-kpis)
-- [Dashboard Design](#dashboard-design)
-- [Insights & Recommendations](#insights--recommendations)
-- [A/B Test Results](#ab-test-results)
-- [How to Run the Project](#how-to-run-the-project)
-- [Project Structure](#project-structure)
-- [Tools & Technologies](#tools--technologies)
+- [Data Architecture & Ingestion](#-data-architecture--ingestion)
+- [Pivoted Analytical SQL Modeling](#-pivoted-analytical-sql-modeling)
+- [Key Performance Indicators (KPIs)](#-key-performance-indicators-kpis)
+- [Dashboard Design & Live Metrics](#-dashboard-design--live-metrics)
+- [A/B Test Evaluation](#-ab-test-evaluation)
+- [Strategic Business Insights](#-strategic-business-insights)
 
 ---
 
 ## 📌 Project Overview
 
-Warby Parker is a direct-to-consumer eyewear brand that disrupted traditional retail by offering a curated online shopping experience — starting with a personalized style quiz and a unique Home Try-On program where customers receive frames to try before buying.
+Warby Parker operates a high-touch direct-to-consumer eyewear funnel starting with a digital style quiz, progressing to a physical Home Try-On sampler box, where customers receive frames to try before purchasing the product.
 
-This project performs an end-to-end **marketing funnel analysis** using SQL to:
+This project performs an end-to-end **marketing funnel analysis** using SQL and Tableau to:
 
 - Track user progression from style quiz → home try-on → purchase
 - Identify the questions in the quiz where users disengage
 - Quantify stage-by-stage conversion rates across the full funnel
 - Evaluate whether offering **3 pairs vs. 5 pairs** in the try-on program impacts purchase likelihood
 
-The dataset was created in collaboration with Warby Parker's Data Science team and is used here as a realistic BI case study.
+This project establishes a resilient analytics pipeline that unifies siloed transactional tables into an optimized framework. It provides full transparency into stage-level drop-offs and quantifies the economic value of an active product variant test: **offering 3-pair vs. 5-pair home sampling kits**.
 
 ---
 
 ## 🧩 Business Problem
 
-Warby Parker's customer acquisition model depends on successfully guiding users through a multi-step digital funnel. Even small drop-off rates at each stage compound into significant revenue loss at scale. The business needs answers to two core questions:
+Warby Parker's customer acquisition model depends on successfully guiding users through a multi-step digital funnel. Even small drop-off rates at each stage compound into significant revenue loss at scale.  Stakeholders required automated answers to three core visibility blockers:
+
+1. **Funnel Friction points:** Where do users experience drop-off across the primary journey milestones?
+2. **The Try-On Experiment:** Does expanding kit options from 3 to 5 pairs reduce purchase friction, or does it trigger choice paralysis?
+3. **Product Inventory Demands:** Which specific frame models dominate checkouts, and how do early quiz selections map to high-value purchases?
 
 ### Quiz Funnel
 - At which question(s) do the most users abandon the quiz?
@@ -65,61 +61,47 @@ Warby Parker's customer acquisition model depends on successfully guiding users 
 
 ## 🗃️ Dataset Description
 
-The analysis draws from **four relational tables**, each linked by a shared `user_id`:
+The analysis draws from **four log files**, each linked by a shared `UserId`:
 
 | Table | Description | Key Columns |
 |---|---|---|
-| `survey` | Responses to Warby Parker's 5-question style quiz | `user_id`, `question` |
-| `quiz` | Users who completed the full style quiz | `user_id` |
-| `home_try_on` | Users who enrolled in the try-on program | `user_id`, `number_of_pairs` |
-| `purchase` | Users who completed a purchase | `user_id`, `product_id`, `style`, `model_name`, `color`, `price` |
-
-### Survey Question Mapping
-
-| Question # | Topic |
-|---|---|
-| 1 | What are you looking for? |
-| 2 | What's your fit? |
-| 3 | Which shapes do you like? |
-| 4 | Which colors do you like? |
-| 5 | When was your last eye exam? |
-
-> **Note:** Total respondents = ~500 users. The home try-on experiment was split 50/50 between the 3-pair and 5-pair groups.
-
----
-
----
-
-## 📋 Table of Contents
-- [Project Overview](#-project-overview)
-- [Business Problem](#-business-problem)
-- [Data Architecture & Ingestion](#-data-architecture--ingestion)
-- [Pivoted Analytical SQL Modeling](#-pivoted-analytical-sql-modeling)
-- [Key Performance Indicators (KPIs)](#-key-performance-indicators-kpis)
-- [Dashboard Design & Live Metrics](#-dashboard-design--live-metrics)
-- [A/B Test Evaluation](#-ab-test-evaluation)
-- [Strategic Business Insights](#-strategic-business-insights)
-
----
-
-## 📌 Project Overview
-Warby Parker operates a high-touch direct-to-consumer eyewear funnel starting with a digital style quiz, progressing to a physical Home Try-On sampler box, and ending in a product purchase. 
-
-This project establishes a resilient analytics pipeline that unifies siloed transactional tables into an optimized framework. It provides full transparency into stage-level drop-offs and quantifies the economic value of an active product variant test: **offering 3-pair vs. 5-pair home sampling kits**.
-
----
-
-## 🧩 Business Problem
-Guidance through digital frameworks involves compounding drop-off risks. Stakeholders required automated answers to three core visibility blockers:
-1. **Funnel Friction points:** Where do users experience drop-off across the primary journey milestones?
-2. **The Try-On Experiment:** Does expanding kit options from 3 to 5 pairs reduce purchase friction, or does it trigger choice paralysis?
-3. **Product Inventory Demands:** Which specific frame models dominate checkouts, and how do early quiz selections map to high-value purchases?
+| `survey` | Responses to Warby Parker's 5-question style quiz | `UserId`, `Question` |
+| `Quiz` | Users who completed the full style quiz | `UserId`, `Style`, `Fit`, `Shape`, `Color` |
+| `Home_Try_On` | Users who enrolled in the try-on program | `UserId`, `NumberOfPairs`, `Address` |
+| `Purchase` | Users who completed a purchase | `UserId`, `ProductId`, `Style`, `ModelName`, `Color`, `Price` |
 
 ---
 
 ## 🗃️ Data Architecture & Ingestion
 The raw application logs consisted of four disconnected schemas linked by an alphanumeric `UserId`. To safeguard against data type mismatches (such as string-based booleans `"TRUE"/"FALSE"` or corrupt empty elements), a **two-tier staging design** was implemented.
 
+### Ingestion & Cleaning Script (Example: Purchase Log Ingestion)
+
+```sql
+-- Create text-safe temporary staging structures
+CREATE TABLE #Purchase_Staging (
+    UserId VARCHAR(100), ProductId VARCHAR(50), Style VARCHAR(100), 
+    ModelName VARCHAR(100), Color VARCHAR(100), Price VARCHAR(50)
+);
+
+-- Bulk load volatile server file
+BULK INSERT #Purchase_Staging
+FROM 'C:\YourSecureDataDirectory\purchase.csv'
+WITH (FORMAT = 'CSV', FIRSTROW = 2, FIELDTERMINATOR = ',', ROWTERMINATOR = '\n');
+
+-- Enforce explicit data typing and purge empty strings
+INSERT INTO Purchase (UserId, ProductId, Style, ModelName, Color, Price)
+SELECT 
+    TRY_CAST(UserId AS UNIQUEIDENTIFIER), 
+    TRY_CAST(ProductId AS INT), 
+    Style, 
+    ModelName, 
+    Color, 
+    TRY_CAST(NULLIF(Price, '') AS DECIMAL(10,2))
+FROM #Purchase_Staging;
+
+DROP TABLE #Purchase_Staging;
+```
 
 ## 🔀 Funnel Logic
 
