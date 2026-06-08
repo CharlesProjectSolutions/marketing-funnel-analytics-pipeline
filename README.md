@@ -102,6 +102,7 @@ SELECT
 FROM #Purchase_Staging;
 
 DROP TABLE #Purchase_Staging;
+
 ```
 
 ## 🔀 Funnel Logic
@@ -110,6 +111,40 @@ The customer journey is modeled as a **linear conversion funnel** across three s
 
 ```
 [Quiz Completion] → [Home Try-On] → [Purchase]
+```
+
+
+## 📈 Conversion Metrics
+
+This script calculates the macro-level milestone volumes, step-by-step conversion rates, and the overall conversion rate from the start of the quiz to a completed purchase.:
+
+```
+WITH Milestone_Counts AS (
+    -- Calculate distinct users reaching each major milestone
+    SELECT 
+        (SELECT COUNT(DISTINCT UserId) FROM Quiz) AS Quiz_Users,
+        (SELECT COUNT(DISTINCT UserId) FROM Home_Try_On) AS TryOn_Users,
+        (SELECT COUNT(DISTINCT UserId) FROM Purchase) AS Purchase_Users
+)
+SELECT 
+    Quiz_Users,
+    TryOn_Users,
+    Purchase_Users,
+    
+    -- 1. Overall Conversion Rate (Quiz -> Purchase)
+    CAST((CAST(Purchase_Users AS DECIMAL(10,2)) / Quiz_Users) * 100.0 AS DECIMAL(10,2)) AS Overall_Conversion_Rate,
+    
+    -- 2. Quiz -> Home Try-On Conversion
+    CAST((CAST(TryOn_Users AS DECIMAL(10,2)) / Quiz_Users) * 100.0 AS DECIMAL(10,2)) AS Quiz_To_TryOn_Conversion,
+    
+    -- 3. Home Try-On -> Purchase Conversion
+    CAST((CAST(Purchase_Users AS DECIMAL(10,2)) / TryOn_Users) * 100.0 AS DECIMAL(10,2)) AS TryOn_To_Purchase_Conversion
+FROM Milestone_Counts;
+
+Output Result:
+| Quiz_Users | TryOn_Users | Purchase_Users | Overall_Conversion_Rate | Quiz_To_TryOn_Conversion | TryOn_To_Purchase_Conversion |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **1000** | 750 | 495 | 49.50 | 75.00 | 66.00 |
 ```
 
 ## 🛠️ Pivoted Analytical SQL Modeling
