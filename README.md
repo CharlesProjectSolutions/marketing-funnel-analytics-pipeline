@@ -135,7 +135,7 @@ AB_Variant_Summaries AS (
     GROUP BY h.NumberOfPairs
 ),
 Flat_User_Data AS (
-    -- 3. Your original query kept completely intact as a baseline
+    -- 3. Original query kept completely intact as a baseline
     SELECT 
         q.UserId, q.Style AS Quiz_Preferred_Style, q.Fit AS Quiz_Preferred_Fit,
         COALESCE(h.NumberOfPairs, 'Did Not Reach Try-On') AS AB_Test_Variant,
@@ -153,7 +153,7 @@ Flat_User_Data AS (
     LEFT JOIN Purchase p    ON q.UserId = p.UserId
     LEFT JOIN AB_Variant_Summaries ab ON h.NumberOfPairs = ab.NumberOfPairs
 ) 
--- 4. Apply UNION ALL to stack the metrics vertically into a native Tableau Dimension
+-- 4. Apply UNION ALL to stack the metrics vertically into a native Tableau Dimension to help build funnel chart
 SELECT 
     UserId, Quiz_Preferred_Style, Quiz_Preferred_Fit, AB_Test_Variant, ProductId, Purchased_Model, Purchase_Amount,
     AB_Variant_Users, AB_Variant_Purchases, AB_Variant_Conversion_Percent,
