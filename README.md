@@ -116,7 +116,7 @@ The customer journey is modeled as a **linear conversion funnel** across three s
 
 ## Conversion Metrics
 
-Calculating macro-level milestone volumes, step-by-step conversion rates, and the overall conversion rate from the start of the quiz to a completed purchase.:
+This script calculates the macro-level milestone volumes, step-by-step conversion rates, and the overall conversion rate from the start of the quiz to a completed purchase.:
 
 
 ```sql
@@ -152,6 +152,7 @@ Output Result:
 ## Actionable Insights & A/B Testing
 
 A/B Test Breakdown: Does offering more try-on pairs boost purchases?
+
 This script Isolate the Number Of Pairs experiment ("3 pairs" vs "5 pairs") to see which group registers a stronger pull-through to final checkout.
 
 
