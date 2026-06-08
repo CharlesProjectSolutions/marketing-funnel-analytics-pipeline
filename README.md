@@ -114,7 +114,7 @@ The customer journey is modeled as a **linear conversion funnel** across three s
 ```
 
 
-## 📈 Conversion Metrics
+## Conversion Metrics
 
 Calculating macro-level milestone volumes, step-by-step conversion rates, and the overall conversion rate from the start of the quiz to a completed purchase.:
 
@@ -148,6 +148,37 @@ Output Result:
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | **1000** | 750 | 495 | 49.50 | 75.00 | 66.00 |
 
+
+## Actionable Insights & A/B Testing
+
+A/B Test Breakdown: Does offering more try-on pairs boost purchases?
+This script Isolate the Number Of Pairs experiment ("3 pairs" vs "5 pairs") to see which group registers a stronger pull-through to final checkout.
+
+
+```sql
+WITH Experiment_Groups AS (
+    -- Segment users by their experiment variant and track if they purchased
+    SELECT 
+        h.UserId,
+        h.NumberOfPairs,
+        CASE WHEN p.UserId IS NOT NULL THEN 1 ELSE 0 END AS Did_Purchase
+    FROM Home_Try_On h
+    LEFT JOIN Purchase p ON h.UserId = p.UserId
+)
+SELECT 
+    NumberOfPairs AS Variant_Group,
+    COUNT(DISTINCT UserId) AS Users_In_Stage,
+    SUM(Did_Purchase) AS Total_Purchases,
+    CAST((CAST(SUM(Did_Purchase) AS DECIMAL(10,2)) / COUNT(DISTINCT UserId)) * 100.0 AS DECIMAL(10,2)) AS Stage_Conversion_Rate
+FROM Experiment_Groups
+GROUP BY NumberOfPairs;
+
+```
+Output Result:
+| Variant_Group | Users_In_Stage | Total_Purchases | Stage_Conversion_Rate | 
+| :--- | :--- | :--- | :--- |
+| **3 pairs** | 379 | 201 | 53.03 |
+| **5 pairs** | 371 | 294 | 79.25 |
 
 
 ## 🛠️ Pivoted Analytical SQL Modeling
