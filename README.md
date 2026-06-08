@@ -143,6 +143,11 @@ SELECT
 FROM Milestone_Counts;
 
 ```
+Output Result:
+| Quiz_Users | TryOn_Users | Purchase_Users | Overall_Conversion_Rate | Quiz_To_TryOn_Conversion | TryOn_To_Purchase_Conversion |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **1000** | 750 | 495 | 49.50 | 75.00 | 66.00 |
+
 
 
 ## 🛠️ Pivoted Analytical SQL Modeling
