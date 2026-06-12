@@ -7,7 +7,7 @@
 ---
 
 ### 🧭 Executive Summary
-This [Customer Funnel Performance dashboard](https://public.tableau.com/app/profile/charles3440/viz/CustomerFunnelPerformance/CustomerFunnelPerformance?publish=yes) visualizes Warby Parker’s customer journey from quiz engagement through Home Try‑On to purchase, revealing stage‑level conversion performance and experiment outcomes. The analysis identifies a **34% drop‑off between Home Try‑On and Purchase**, spotlighting a key opportunity to improve post–try‑on engagement, product confidence, and checkout CTAs. The A/B test shows that offering **5 pairs instead of 3 drives a +49.4% lift in purchase conversion**, providing clear evidence to guide product and marketing strategy. 
+This [Funnel Performance dashboard](https://public.tableau.com/app/profile/charles3440/viz/CustomerFunnelPerformance/CustomerFunnelPerformance?publish=yes) visualizes Warby Parker’s customer journey from quiz engagement through Home Try‑On to purchase, revealing stage‑level conversion performance and experiment outcomes. The analysis identifies a **34% drop‑off between Home Try‑On and Purchase**, spotlighting a key opportunity to improve post–try‑on engagement, product confidence, and checkout CTAs. The A/B test shows that offering **5 pairs instead of 3 drives a +49.4% lift in purchase conversion**, providing clear evidence to guide product and marketing strategy. 
 
 ---
 
