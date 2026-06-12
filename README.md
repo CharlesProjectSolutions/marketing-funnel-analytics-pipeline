@@ -27,7 +27,7 @@ This [Customer Funnel Performance dashboard](https://public.tableau.com/app/prof
 ---
 
 > **An end-to-end full-funnel analysis of Warby Parker's style quiz and home try-on customer journey; measuring conversion rates, diagnosing drop-off points, and evaluating an A/B test on try-on pair volume.**
-> **Utilizing a Load-Then-Link staging design to ingest volatile web logs, compute window metrics, and serve a denormalized, vertically pivoted data layer optimized for dashboard development**
+> **Utilizing a Load-Then-Link staging design to ingest volatile web logs, compute window metrics, and serve a denormalized, vertically pivoted data layer optimized for tableau dashboard development**
 
 ---
 
