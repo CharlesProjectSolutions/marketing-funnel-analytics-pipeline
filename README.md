@@ -17,6 +17,7 @@ This [Customer Funnel Performance dashboard](https://public.tableau.com/app/prof
 - [Project Overview](#-project-overview)
 - [Business Problem](#-business-problem)
 - [Dataset Description](#-dataset-description)
+- [Dataset Description](#-dataset-description)
 - [Data Architecture & Ingestion](#-data-architecture--ingestion)
 - [Pivoted Analytical SQL Modeling](#-pivoted-analytical-sql-modeling)
 - [Key Performance Indicators (KPIs)](#-key-performance-indicators-kpis)
